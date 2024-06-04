@@ -56,7 +56,11 @@ func prepareContainer(cfg *drivers.TaskConfig, taskCfg TaskConfig) (syexec, erro
 		argv = append(argv, "-c", taskCfg.Command)
 	}
 	if taskCfg.NetworkMode != "" {
-		argv = append(argv, "-N", taskCfg.NetworkMode)
+		if taskCfg.NetworkMode == "bridge" {
+			argv = append(argv, "-N", taskCfg.NetworkMode, "-i", "auto", "-N", "private-bridge") 
+		} else {
+			argv = append(argv, "-N", taskCfg.NetworkMode)
+		}
 	} else if len(taskCfg.PortMap) > 0 {
 		argv = append(argv, "-N", "public-bridge", "-i", "auto")
 	}
